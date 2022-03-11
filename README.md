@@ -5,3 +5,4 @@ Projet Java 4A S2 MIN1
 - Réservations : affichage, création, suppression, modification
 - Toutes les contraintes sont respectées
 - Aucun tests réalisés
+Difficultés : ajouter l'attribut modèle à la table véhicule de la base de données
