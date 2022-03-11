@@ -1,0 +1,142 @@
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+<!DOCTYPE html>
+<html>
+<%@include file="/WEB-INF/views/common/head.jsp"%>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+
+    <%@ include file="/WEB-INF/views/common/header.jsp" %>
+    <!-- Left side column. contains the logo and sidebar -->
+    <%@ include file="/WEB-INF/views/common/sidebar.jsp" %>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Reservations
+            </h1>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- Horizontal Form -->
+                    <div class="box">
+                        <!-- form start -->
+                        <form class="form-horizontal" method="post" action="${pageContext.request.contextPath}/rents/update">
+                            <div class="box-body">
+                                <c:set var="verify" value="${verify}"></c:set>
+                                <c:if test="${verify==true}">
+                                    <script>
+                                        alert('Reservation impossible\nLa voiture choisie est deja reservee pour ces dates.\nVeuillez changer le vehicule ou vos dates de reservation.');
+                                    </script>
+                                </c:if>
+                                <c:set var="test" value="${test}"></c:set>
+                                <c:if test="${test==true}">
+                                    <script>
+                                        alert("Reservation impossible\nVous ne pouvez pas reserve la meme voiture plus de 7 jours de suite.\nVeuillez modifier la date de fin afin que la duree de votre reservation n'excede pas 7 jours.")
+                                    </script>
+                                </c:if>
+                                <c:set var="pause" value="${pause}"></c:set>
+                                <c:if test="${pause==true}">
+                                    <script>
+                                        alert("Reservation impossible.\nLa voiture choisie est déjà reservee.\nVeuillez changer de vehicule ou changer vos dates de reservation.")
+                                    </script>
+                                </c:if>
+                                <div class="form-group">
+                                    <label for="client" class="col-sm-2 control-label">Client</label>
+                                    <div class="col-sm-10">
+                                        <select class="form-control" id="client" name="client">
+                                            <c:forEach items="${listUsers}" var="user">
+                                                    <c:forEach items="${listRents}" var="rent">
+                                                        <c:set var="u_id" value="${user.id}"></c:set>
+                                                        <c:set var="id" value="${id}"></c:set>
+                                                        <c:set var="r_id" value="${rent.id}"></c:set>
+                                                        <c:set var="ru_id" value="${rent.clientId}"></c:set>
+                                                        <c:if test="${id==r_id}">
+                                                            <c:if test="${u_id==ru_id}">
+                                                                <option value="${user.id}">
+                                                                    ${user.prenom} ${user.nom}
+                                                                </option>
+                                                            </c:if>
+                                                        </c:if>
+                                                    </c:forEach>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                </div> 
+                                <div class="form-group">
+                                    <label for="begin" class="col-sm-2 control-label">Date de debut</label>
+                                    <div class="col-sm-10">
+                                        <c:forEach items="${listRents}" var="rent">
+                                            <c:set var="r_id" value="${rent.id}"></c:set>
+                                            <c:set var="id" value="${id}"></c:set>
+                                            <c:if test="${id==r_id}">
+                                                <input type="text" class="form-control" id="begin" name="begin" value="${begin}" required
+                                                data-inputmask="'alias': 'dd/mm/yyyy'" data-mask/>
+                                            </c:if>
+                                        </c:forEach>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="end" class="col-sm-2 control-label">Date de fin</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="end" name="end" value="${end}" required
+                                        data-inputmask="'alias': 'dd/mm/yyyy'" data-mask/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="car" class="col-sm-2 control-label">Voiture</label>
+                                    <div class="col-sm-10">
+                                        <select class="form-control" id="car" name="car">
+                                            <c:forEach items="${listVehicles}" var="vehicle">
+                                                    <c:forEach items="${listRents}" var="rent">
+                                                        <c:set var="v_id" value="${vehicle.id}"></c:set>
+                                                        <c:set var="id" value="${id}"></c:set>
+                                                        <c:set var="r_id" value="${rent.id}"></c:set>
+                                                        <c:set var="rv_id" value="${rent.vehicleId}"></c:set>
+                                                        <c:if test="${id==r_id}">
+                                                            <c:if test="${v_id==rv_id}">
+                                                                <option value="${vehicle.id}">
+                                                                    ${vehicle.constructeur} ${vehicle.modele}
+                                                                </option>
+                                                            </c:if>
+                                                        </c:if>
+                                                    </c:forEach>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.box-body -->
+                            <div class="box-footer">
+                                <button type="submit" class="btn btn-info pull-right">Modifier</button>
+                            </div>
+                            <!-- /.box-footer -->
+                        </form>
+                    </div>
+                    <!-- /.box -->
+                </div>
+                <!-- /.col -->
+            </div>
+        </section>
+        <!-- /.content -->
+    </div>
+
+    <%@ include file="/WEB-INF/views/common/footer.jsp" %>
+</div>
+<!-- ./wrapper -->
+
+<%@ include file="/WEB-INF/views/common/js_imports.jsp" %>
+<script src="${pageContext.request.contextPath}/resources/plugins/input-mask/jquery.inputmask.js"></script>
+<script src="${pageContext.request.contextPath}/resources/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
+<script src="${pageContext.request.contextPath}/resources/plugins/input-mask/jquery.inputmask.extensions.js"></script>
+<script>
+    $(function () {
+        $('[data-mask]').inputmask()
+    });
+</script>
+</body>
+</html>
